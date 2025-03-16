@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import tensorflow as tf
 import numpy as np
@@ -6,12 +7,18 @@ from PIL import Image
 # Fungsi untuk load model dengan cache agar tidak di-load berulang
 @st.cache_resource
 def load_model():
-    model_path = "D:\\Skripsi\\Scan-Makanan-Jepara\\jepara_food_classifier.h5"
+    model_path = "jepara_food_classifier.h5"  # Path relatif
+    if not os.path.exists(model_path):
+        st.error(f"❌ File model tidak ditemukan: {model_path}")
+        return None
     model = tf.keras.models.load_model(model_path)
     return model
 
 # Load model
 model = load_model()
+
+if model is None:
+    st.stop()
 
 # Daftar label kelas (pastikan sesuai dengan train_generator.class_indices)
 class_labels = ['adon_adon_coro', 'horok_horok', 'pindang_serani']
